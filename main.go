@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/alexflint/go-arg"
 	efinance "github.com/denysvitali/postfinance-sync/pkg"
-	"github.com/denysvitali/postfinance-sync/pkg/models"
 	"github.com/sirupsen/logrus"
 	"os"
 )
@@ -40,30 +39,24 @@ func main() {
 		logger.Fatalf("unable to open file: %v", err)
 	}
 
-	var bookings []models.Booking
 	dateFrom := args.ExportFrom
 	dateTo := args.ExportTo
-	forwardId := ""
-	page := 1
-	for {
-		logger.Debugf("page %d, forwardId=%s", page, forwardId)
-		bookingsResult, err := c.GetBookings(args.AccountId, dateFrom, dateTo, forwardId)
-		if err != nil {
-			logger.Errorf("unable to get bookings: %v", err)
-			break
-		}
-		bookings = append(bookings, bookingsResult.Bookings...)
-		forwardId = bookingsResult.ForwardId
-		if forwardId == "" {
-			logger.Infof("reached the end")
-			break
-		}
-		page++
+
+	movements, err := c.GetAllMovements(100,
+		args.AccountId,
+		0,
+		[]int{200, 202},
+		dateFrom,
+		dateTo,
+	)
+
+	if err != nil {
+		logger.Fatalf("unable to get movements: %v", err)
 	}
 
 	// Given the bookings JSON, encode it to file
 	enc := json.NewEncoder(f)
-	err = enc.Encode(bookings)
+	err = enc.Encode(movements)
 	if err != nil {
 		logger.Fatalf("unable to encode: %v", err)
 	}

@@ -1,4 +1,5 @@
 .idea
-/bin
+/build
 /test/fixtures
 /bookings.json
+/bookings*.json

@@ -16,7 +16,8 @@ type Client struct {
 	csrfPid string
 }
 
-const BaseUrl = "https://www.postfinance.ch/ap/ba/ef/api/v2/accounts/bookings"
+const BaseUrl = "https://www.postfinance.ch/"
+const MovementsPath = "/ap/ba/ts/api/ms/v4/accounts/movements"
 const UserAgent = "Mozilla/5.0 (X11; Linux x86_64; rv:105.0) Gecko/20100101 Firefox/105.0"
 
 func New(logger *logrus.Logger) (*Client, error) {
